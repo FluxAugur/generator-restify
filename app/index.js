@@ -19,7 +19,7 @@ RestifyGenerator = yeoman.generators.Base.extend({
     });
   },
 
-  askFor: function () {
+  linter: function () {
     var done, prompts;
 
     done = this.async();
@@ -50,6 +50,25 @@ RestifyGenerator = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
+  taskRunner: function () {
+    var done, prompts;
+
+    done = this.async();
+
+    prompts = [
+      {
+        type: 'list',
+        name: 'taskRunner',
+        message: 'What task runner would you prefer to use?',
+        choices: [
+          'Grunt',
+          'Gulp'
+        ],
+        default: 'Grunt'
+      }
+    ];
+  },
+
   app: function () {
     this.mkdir('common');
     this.mkdir('routes');
@@ -63,7 +82,13 @@ RestifyGenerator = yeoman.generators.Base.extend({
   projectfiles: function () {
     this.copy('editorconfig', '.editorconfig');
     this.copy('gitignore', '.gitignore');
-    this.copy('_Gruntfile.js', 'Gruntfile.js');
+
+    // load correct task runner file
+    if (this.options.taskRunner === 'Grunt') {
+      this.copy('_Gruntfile.js', 'Gruntfile.js');
+    } else {
+      this.copy('_gulpfile.js', 'gulpfile.js');
+    }
   }
 });
 
